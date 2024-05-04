@@ -98,7 +98,6 @@ const getUserBooks = async (req, res) => {
 };
 
 const addBookstoFav = async (req, res) => {
-  console.log(req.originalUrl);
   try {
     const { id } = req.params;
     const book = await bookModel.findById(id);
@@ -113,7 +112,8 @@ const addBookstoFav = async (req, res) => {
       updatedReaders = [req.user._id];
     } else {
       updatedReaders = bookReaders.filter(
-        (reader) => !reader.equals(req.user._id)
+        (reader) =>
+          reader.toString() !== req.user._id.toString()
       );
     }
     book.readers_ids = updatedReaders;
@@ -128,18 +128,21 @@ const addBookstoFav = async (req, res) => {
 };
 
 const getFavBooks = async (req, res) => {
-  console.log("works well");
   const userId = req.user._id;
+  // console.log("id", req.user._id.toString());
+
   const books = await bookModel.find({
     "readers_ids.0": { $exists: true },
   });
   const favBooks = books.filter((book) =>
-    book.readers_ids.find((element) =>
-      element.equals(userId)
+    book.readers_ids.find(
+      (element) => element.toString() === userId.toString()
+
+      // element.equals(userId);
     )
   );
 
-  res.status(201).send(books);
+  res.status(201).send(favBooks);
 };
 
 const addComment = async (req, res) => {

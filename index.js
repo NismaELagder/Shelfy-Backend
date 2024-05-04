@@ -6,7 +6,6 @@ import usersRoute from "./routes/usersRoutes.js";
 import cors from "cors";
 const app = express();
 app.use(express.json()); // Middleware parse body to json
-console.log(process.env);
 
 app.use(cors());
 app.use("/pdfs", express.static("pdfs"));
